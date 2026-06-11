@@ -5,7 +5,10 @@ from core.validator import QueryValidator
 
 from agents.rca_agent import RCAAgent
 from agents.repair_agent import RepairAgent
-
+from memory.memory_manager import (
+    find_incident,
+    save_incident
+)
 
 executor = QueryExecutor()
 
@@ -36,9 +39,36 @@ parsed_error = parse_error(
     result["error"]
 )
 
+memory_hit = find_incident(
+    parsed_error["type"],
+    parsed_error["value"]
+)
+
 print("\nParsed Error")
 
 print(parsed_error)
+
+if memory_hit:
+
+    print("\nMEMORY HIT")
+
+    print(memory_hit)
+
+    repaired_query = (
+        memory_hit["corrected_query"]
+    )
+
+    retry_result = executor.execute(
+        repaired_query
+    )
+
+    print("\nSUCCESS FROM MEMORY")
+
+    print(retry_result["result"])
+
+    exit()
+
+
 
 database_schema = get_schema()
 
@@ -108,7 +138,11 @@ retry_result = executor.execute(
     repair_response.corrected_query
 )
 if retry_result["success"]:
-
+    save_incident(
+        parsed_error["type"],
+        parsed_error["value"],
+        repair_response.corrected_query
+    )
     print("SUCCESS")
 
     print(retry_result["result"])
