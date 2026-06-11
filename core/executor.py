@@ -3,7 +3,7 @@ import sqlite3
 
 class QueryExecutor:
 
-    def __init__(self, db_path="database/company.db"):
+    def __init__(self, db_path="database/session.db"):
         self.db_path = db_path
 
     def execute(self, query):

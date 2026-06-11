@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def get_schema(db_path="database/company.db"):
+def get_schema(db_path="database/session.db"):
 
     conn = sqlite3.connect(db_path)
 

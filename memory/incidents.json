@@ -3,5 +3,15 @@
         "error_type": "missing_column",
         "error_value": "email",
         "corrected_query": "SELECT customer_email\nFROM customers"
+    },
+    {
+        "error_type": "unknown",
+        "error_value": "near \"table\": syntax error",
+        "corrected_query": "SELECT customer_name FROM customers"
+    },
+    {
+        "error_type": "missing_table",
+        "error_value": "books",
+        "corrected_query": "select * from customers"
     }
 ]

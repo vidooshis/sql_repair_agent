@@ -29,6 +29,14 @@ def save_incident(
     corrected_query
 ):
 
+    existing = find_incident(
+        error_type,
+        error_value
+    )
+
+    if existing:
+        return
+
     memory = load_memory()
 
     memory.append(
