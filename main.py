@@ -106,7 +106,7 @@ print("\nConfidence")
 
 print(repair_response.confidence)
 
-query_valid = QueryValidator.validate(
+validation = QueryValidator.validate(
     repair_response.corrected_query
 )
 
@@ -115,15 +115,6 @@ confidence_valid = (
         repair_response.confidence
     )
 )
-
-if not query_valid["valid"]:
-
-    print(
-        f"Validation failed: {query_valid['reason']}"
-    )
-
-    exit()
-
 if not confidence_valid:
 
     print(
@@ -132,6 +123,30 @@ if not confidence_valid:
 
     exit()
 
+if validation["requires_approval"]:
+
+    print("\n⚠ HUMAN APPROVAL REQUIRED")
+
+    print(
+        f"Risk Level: {validation['risk_level']}"
+    )
+
+    print(
+        f"Reason: {validation['reason']}"
+    )
+
+    choice = input(
+        "\nApprove execution? (y/n): "
+    )
+
+    if choice.lower() != "y":
+
+        print(
+            "\nExecution cancelled."
+        )
+
+        exit()
+        
 print("\nRetrying Query...\n")
 
 retry_result = executor.execute(

@@ -1,50 +1,69 @@
 class QueryValidator:
 
-    ALLOWED_OPERATIONS = [
-        "SELECT"
-    ]
-
-    BLOCKED_OPERATIONS = [
+    HIGH_RISK = [
         "DROP",
         "DELETE",
-        "UPDATE",
-        "INSERT",
-        "ALTER",
-        "TRUNCATE",
-        "CREATE"
+        "TRUNCATE"
     ]
+
+    MEDIUM_RISK = [
+        "UPDATE",
+        "ALTER"
+    ]
+
+    LOW_RISK = [
+        "INSERT"
+    ]
+
+    @staticmethod
+    def validate(query):
+
+        query_upper = query.strip().upper()
+
+        for op in QueryValidator.HIGH_RISK:
+
+            if op in query_upper:
+
+                return {
+                    "valid": False,
+                    "requires_approval": True,
+                    "risk_level": "HIGH",
+                    "reason": f"{op} can permanently remove data"
+                }
+
+        for op in QueryValidator.MEDIUM_RISK:
+
+            if op in query_upper:
+
+                return {
+                    "valid": False,
+                    "requires_approval": True,
+                    "risk_level": "MEDIUM",
+                    "reason": f"{op} modifies schema or data"
+                }
+
+        for op in QueryValidator.LOW_RISK:
+
+            if op in query_upper:
+
+                return {
+                    "valid": False,
+                    "requires_approval": True,
+                    "risk_level": "LOW",
+                    "reason": f"{op} changes database state"
+                }
+
+        return {
+            "valid": True,
+            "requires_approval": False,
+            "risk_level": "NONE",
+            "reason": None
+        }
 
     @staticmethod
     def validate_confidence(confidence):
 
         try:
-            confidence = float(confidence)
-
-            return confidence >= 0.7
-
+            return float(confidence) >= 0.7
         except:
             return False
-
-    @staticmethod
-    def validate(query):
-
-        query = query.strip().upper()
-
-        for operation in QueryValidator.BLOCKED_OPERATIONS:
-
-            if operation in query:
-                return {
-                    "valid": False,
-                    "reason": f"Blocked operation detected: {operation}"
-                }
-
-        if not query.startswith("SELECT"):
-            return {
-                "valid": False,
-                "reason": "Only SELECT queries allowed"
-            }
-
-        return {
-            "valid": True,
-            "reason": None
-        }
