@@ -4,10 +4,13 @@ import os
 MEMORY_FILE = "memory/incidents.json"
 
 def load_memory():
-
+    
     if not os.path.exists(MEMORY_FILE):
         return []
-
+    os.makedirs(
+        os.path.dirname(MEMORY_FILE),
+        exist_ok=True
+    )
     try:
 
         with open(MEMORY_FILE, "r") as file:
@@ -28,6 +31,10 @@ def save_incident(
     error_value,
     corrected_query
 ):
+    os.makedirs(
+        os.path.dirname(MEMORY_FILE),
+        exist_ok=True
+    )
 
     existing = find_incident(
         error_type,

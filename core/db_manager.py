@@ -1,30 +1,54 @@
 import sqlite3
 import pandas as pd
+import re
+import os
 import streamlit as st
-DB_PATH = "database/session.db"
+DEFAULT_DB_PATH = "database/session.db"
+os.makedirs("database", exist_ok=True)
+
+def validate_identifier(name):
+
+    return bool(
+        re.match(
+            r"^[A-Za-z_][A-Za-z0-9_]*$",
+            name
+        )
+    )
+
 def get_connection():
-    return sqlite3.connect(DB_PATH)
-    # return sqlite3.connect(
-    #     st.session_state.db_path
-    # )
 
+    db_path = st.session_state.get(
+        "db_path",
+        DEFAULT_DB_PATH
+    )
 
-def get_connection():
-
-    return sqlite3.connect(DB_PATH)
+    return sqlite3.connect(db_path)
 
 def create_table(
     table_name,
     columns
 ):
+    if not validate_identifier(
+        table_name
+    ):
+        raise ValueError(
+            "Invalid table name"
+        )
+    for column_name, _ in columns:
 
+        if not validate_identifier(
+            column_name
+        ):
+            raise ValueError(
+                f"Invalid column name: {column_name}"
+            )
     conn = get_connection()
 
     cursor = conn.cursor()
     cursor.execute(
         f"DROP TABLE IF EXISTS {table_name}"
     )
-
+    
     column_definitions = ", ".join(
         [
             f"{name} {datatype}"

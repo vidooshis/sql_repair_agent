@@ -64,6 +64,8 @@ class QueryValidator:
     def validate_confidence(confidence):
 
         try:
+            if confidence == "Unknown":
+                return False
             return float(confidence) >= 0.7
         except:
             return False

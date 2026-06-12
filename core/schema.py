@@ -1,7 +1,9 @@
 import sqlite3
+import streamlit as st
 
-
-def get_schema(db_path="database/session.db"):
+def get_schema():
+    db_path = st.session_state.get(
+        "db_path")
 
     conn = sqlite3.connect(db_path)
 

@@ -3,6 +3,18 @@ import pandas as pd
 from core.db_manager import create_table
 from core.db_manager import insert_row
 from core.db_manager import fetch_table
+import uuid
+import os
+if "db_path" not in st.session_state:
+
+    os.makedirs(
+        "database",
+        exist_ok=True
+    )
+
+    st.session_state.db_path = (
+        f"database/{uuid.uuid4().hex}.db"
+    )
 
 if "form_version" not in st.session_state:
     st.session_state.form_version = 0
@@ -67,6 +79,37 @@ if st.button(
 
 
 if st.button("Create Table"):
+
+    if not table_name.strip():
+
+        st.error(
+            "Table name is required"
+        )
+
+        st.stop()
+
+    for column in st.session_state.columns:
+
+        if not column["name"].strip():
+
+            st.error(
+                "Column names cannot be empty"
+            )
+
+            st.stop()
+
+    column_names = [
+        col["name"].strip()
+        for col in st.session_state.columns
+    ]
+
+    if len(column_names) != len(set(column_names)):
+
+        st.error(
+            "Duplicate column names detected"
+        )
+
+        st.stop()
 
     columns = [
         (col["name"], col["type"])
@@ -228,3 +271,23 @@ if st.button(
     st.switch_page(
         "pages/query_assistant.py"
     )
+
+if st.button(
+    "🗑 Start New Database",
+    use_container_width=True
+):
+
+    keys_to_remove = [
+        "active_table",
+        "active_columns",
+        "columns",
+        "form_version",
+        "db_path"
+    ]
+
+    for key in keys_to_remove:
+
+        if key in st.session_state:
+            del st.session_state[key]
+
+    st.rerun()

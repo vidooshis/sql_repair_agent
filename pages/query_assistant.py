@@ -8,7 +8,7 @@ from core.validator import QueryValidator
 
 from agents.rca_agent import RCAAgent
 from agents.repair_agent import RepairAgent
-
+import json
 from memory.memory_manager import (
     find_incident,
     save_incident
@@ -48,6 +48,10 @@ st.subheader(
 )
 
 schema = get_schema()
+schema_text = json.dumps(
+    schema,
+    indent=2
+)
 
 st.json(schema)
 
@@ -215,7 +219,7 @@ if st.button(
     rca_response = rca_agent(
         query=query,
         error=result["error"],
-        database_schema=schema
+        database_schema=schema_text
     )
 
     with st.expander(
@@ -235,7 +239,7 @@ if st.button(
     repair_response = repair_agent(
         query=query,
         root_cause=rca_response.root_cause,
-        database_schema=schema
+        database_schema=schema_text
     )
 
 
@@ -314,7 +318,13 @@ if st.button(
     except:
 
         confidence = "Unknown"
+    if confidence == "Unknown":
 
+        st.error(
+            "Invalid confidence score returned by the repair model. Try again."
+        )
+
+        st.stop()
     st.info(
         f"Confidence: {confidence}"
     )
@@ -362,9 +372,14 @@ if st.button(
     # ==============================================
     # RETRY
     # ==============================================
-
-    retry_result = executor.execute(
+    repaired_query = (
         repair_response.corrected_query
+        .replace("```sql", "")
+        .replace("```", "")
+        .strip()
+    )
+    retry_result = executor.execute(
+        repaired_query
     )
 
     if retry_result["success"]:

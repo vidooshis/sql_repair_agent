@@ -1,10 +1,12 @@
 import sqlite3
-
+import streamlit as st
 
 class QueryExecutor:
 
-    def __init__(self, db_path="database/session.db"):
-        self.db_path = db_path
+    def __init__(self):
+        self.db_path = (
+            st.session_state["db_path"]
+        )
 
     def execute(self, query):
 
@@ -15,7 +17,12 @@ class QueryExecutor:
 
             cursor.execute(query)
 
-            rows = cursor.fetchall()
+            if cursor.description:
+                rows = cursor.fetchall()
+
+            else:
+                conn.commit()
+                rows = []
 
             conn.close()
 
