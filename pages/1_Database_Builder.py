@@ -269,7 +269,7 @@ if st.button(
     use_container_width=True
 ):
     st.switch_page(
-        "pages/query_assistant.py"
+        "pages/2_SQL_Repair_Assistant.py"
     )
 
 if st.button(

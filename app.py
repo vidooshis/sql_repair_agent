@@ -6,38 +6,46 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title(
-    "🤖 Autonomous SQL Repair Agent"
-)
-
 st.markdown("""
-Build databases dynamically and watch AI automatically
-detect, analyze, repair, and execute broken SQL queries.
+# 🤖 Autonomous SQL Repair Agent
 """)
+with st.container(border=True):
 
-st.divider()
+    st.markdown("""
+### AI-Powered SQL Self-Healing System
 
-st.subheader("How It Works")
-
-st.markdown("""
-1. Create a custom database schema
-
-2. Insert sample data
-
-3. Run SQL queries
-
-4. Detect execution failures
-
-5. Perform Root Cause Analysis (DSPy)
-
-6. Generate corrected SQL
-
-7. Validate repair safety
-
-8. Retry execution automatically
-
-9. Store successful fixes in incident memory
+This system automatically detects SQL failures,
+performs root-cause analysis using DSPy,
+generates repairs with Gemini,
+validates execution safety,
+and learns from historical incidents.
 """)
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        "LLM Engine",
+        "Gemini 2.5"
+    )
+
+with col2:
+    st.metric(
+        "Reasoning",
+        "DSPy"
+    )
+
+with col3:
+    st.metric(
+        "Database",
+        "SQLite"
+    )
+
+with col4:
+    st.metric(
+        "Memory",
+        "Incident Cache"
+    )
+
 
 st.divider()
 
@@ -47,30 +55,62 @@ col1, col2 = st.columns(2)
 
 with col1:
 
-    st.success("Dynamic Schema Creation")
+    with st.container(border=True):
+        st.markdown("### 🏗 Dynamic Schema Creation")
+        st.caption(
+            "Create custom databases directly from the UI."
+        )
 
-    st.success("DSPy Root Cause Analysis")
+    with st.container(border=True):
+        st.markdown("### 🧠 DSPy RCA")
+        st.caption(
+            "Analyze SQL failures and identify root causes."
+        )
 
-    st.success("Autonomous SQL Repair")
+    with st.container(border=True):
+        st.markdown("### 🔧 Autonomous Repair")
+        st.caption(
+            "Generate executable SQL fixes."
+        )
 
 with col2:
 
-    st.success("Incident Memory")
+    with st.container(border=True):
+        st.markdown("### 🗂 Incident Memory")
+        st.caption(
+            "Reuse historical fixes instantly."
+        )
 
-    st.success("Safety Validation")
+    with st.container(border=True):
+        st.markdown("### 🛡 Safety Validation")
+        st.caption(
+            "Risk scoring and approval workflow."
+        )
 
-    st.success("Self-Healing Execution")
-
+    with st.container(border=True):
+        st.markdown("### ⚡ Self-Healing Execution")
+        st.caption(
+            "Retry repaired queries automatically."
+        )
 st.divider()
 
-st.info(
-    "Start by creating a database schema and adding sample data."
+st.subheader("🏛 Architecture")
+cols = st.columns(6)
+
+cols[0].success("Query")
+cols[1].success("RCA")
+cols[2].success("Repair")
+cols[3].success("Validate")
+cols[4].success("Execute")
+cols[5].success("Memory")
+st.success(
+    "Ready to test autonomous SQL recovery? Build a schema and intentionally break queries to watch the agent self-heal."
 )
 
 if st.button(
-    "🚀 Start Building",
-    use_container_width=True
+    "Launch Database Builder",
+    use_container_width=True,
 ):
     st.switch_page(
-        "pages/create_schema.py"
+        "pages/1_Database_Builder.py"
     )
